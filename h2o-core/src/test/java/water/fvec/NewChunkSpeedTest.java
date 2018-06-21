@@ -110,14 +110,19 @@ public class NewChunkSpeedTest extends TestUtil {
             "smalldata/jira/longVals.csv", "smalldata/jira/doubleVals.csv", "smalldata/jira/bigDoubleVals.csv"};
     Frame f;
     int numLoops = 5*numberLoops;
-    for (int index=4; index<filenames.length; index++) {
-      double startTime = System.currentTimeMillis();
-      for (int loop=0; loop < numLoops; loop++) {
-        f = parse_test_file(filenames[index]);
-        assertTrue(f.numRows()==100000);
+    try {
+      for (int index = 4; index < filenames.length; index++) {
+        double startTime = System.currentTimeMillis();
+        for (int loop = 0; loop < numLoops; loop++) {
+          f = parse_test_file(filenames[index]);
+          assertTrue(f.numRows() == 100000);
+          Scope.track(f);
+        }
+        double endTime = (System.currentTimeMillis() - startTime) * 0.001;  // change time to seconds
+        Log.info("Parsing: " + filenames[index] + " time(s) taken for " + numLoops + " loops is " + endTime);
       }
-      double endTime = (System.currentTimeMillis() - startTime) * 0.001;  // change time to seconds
-      Log.info("Parsing: "+filenames[index]+ " time(s) taken for " + numLoops + " loops is " + endTime);
+    } finally {
+      Scope.exit();
     }
   }
 
