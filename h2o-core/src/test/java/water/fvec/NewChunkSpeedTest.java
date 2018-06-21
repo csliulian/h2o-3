@@ -1,7 +1,6 @@
 package water.fvec;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import water.MRTask;
 import water.Scope;
@@ -20,7 +19,7 @@ public class NewChunkSpeedTest extends TestUtil {
   int rowNumber = 1000000;
   int rowInterval = 1000;
   double tolerance = 1e-10;
-  int numberLoops=2;
+  int numberLoops=1;
 
   @Test public void testParseDoublesConst(){
     double startTime = System.currentTimeMillis();
@@ -88,7 +87,7 @@ public class NewChunkSpeedTest extends TestUtil {
 
 
   // todo: This should be changed to test after Spencer PR is in.
-  @Ignore
+  @Test
   public void testParseLong(){
     double startTime = System.currentTimeMillis();
     for (int index=0; index<numberLoops; index++)
@@ -97,7 +96,7 @@ public class NewChunkSpeedTest extends TestUtil {
     Log.info("New Chunk test for longs:", " time(s) taken for "+numberLoops+" is "+endTime);
   }
 
-  @Ignore public void testParseLongConsts(){
+  @Test public void testParseLongConsts(){
     double startTime = System.currentTimeMillis();
     for (int index=0; index<numberLoops; index++)
       testsForLongs(true);
@@ -105,6 +104,22 @@ public class NewChunkSpeedTest extends TestUtil {
     Log.info("New Chunk test for constant longs:", " time(s) taken for "+numberLoops+" is "+endTime);
   }
 
+  @Test public void testParseDataFromFiles(){
+    Scope.enter();
+    String[] filenames = new String[] {"smalldata/jira/floatVals.csv", "smalldata/jira/integerVals.csv",
+            "smalldata/jira/longVals.csv", "smalldata/jira/doubleVals.csv", "smalldata/jira/bigDoubleVals.csv"};
+    Frame f;
+    int numLoops = 5*numberLoops;
+    for (int index=4; index<filenames.length; index++) {
+      double startTime = System.currentTimeMillis();
+      for (int loop=0; loop < numLoops; loop++) {
+        f = parse_test_file(filenames[index]);
+        assertTrue(f.numRows()==100000);
+      }
+      double endTime = (System.currentTimeMillis() - startTime) * 0.001;  // change time to seconds
+      Log.info("Parsing: "+filenames[index]+ " time(s) taken for " + numLoops + " loops is " + endTime);
+    }
+  }
 
   public void testsForLongs(boolean forConstants) {
     Scope.enter();
