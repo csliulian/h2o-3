@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class NewChunkSpeedTest extends TestUtil {
-  @BeforeClass() public static void setup() { stall_till_cloudsize(3); }
+  @BeforeClass() public static void setup() { stall_till_cloudsize(1); }
   int rowNumber = 1000000;
   int rowInterval = 1000;
   double tolerance = 1e-10;
